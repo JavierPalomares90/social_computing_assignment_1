@@ -1,3 +1,5 @@
 *.iml
 modules.xml
 .idea/*
+*.class
+target/*
