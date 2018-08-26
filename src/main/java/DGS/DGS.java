@@ -24,7 +24,6 @@ public class DGS
         {
             System.err.println("Input file is malformed");
         }
-        //TODO: Run DGS on weights
         DGS(weights);
     }
 
