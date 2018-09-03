@@ -81,7 +81,7 @@ public class KM
             set T, then update the labels to improve them so that Nls != T 
             the next time through the loop.
             */
-            if (NlS == T)
+            if (NlS.equals(T))
             {
                 // Improve labeling map
                 labeling = updateLabeling(labeling, weights, S, T);
@@ -100,20 +100,14 @@ public class KM
                 /* Pick y that is a member of the set of label neighbors of 
                 Set S, but are not member of set T.
                 */
-                Iterator nIterator = NlS.iterator();
-                int y = 0;
-                while (nIterator.hasNext())
-                {
-                    y = (Integer) nIterator.next();
-                    if (!T.contains(y))
-                        break;
-                }
-                
+                int y = findFreeVertexInNeighbors(NlS,T);
+
                 if (alreadyMatched(y, M))
                 {
                     int z = M.get(y);
                     T.add(y);
                     S.add(z);
+                    // TODO: Go back to step 3 after this (skipping lines 74-75)?
                 }
                 else
                 {
@@ -121,7 +115,8 @@ public class KM
                 }
             }
         } // End while NOT perfect Matching loop
-        
+
+
         /*
            The Hungarian Algorithm has finished when M is Perfect Matching size 
         */
@@ -152,7 +147,24 @@ public class KM
         }
     } // End KM()
 
-    
+    /**
+     * Pick y that is a member of the set of label neighbors of
+     * Set S, but are not member of set T.
+     *
+     */
+    private static int findFreeVertexInNeighbors(Set<Integer> neighbors, Set<Integer> T)
+    {
+        for(Integer n: neighbors)
+        {
+            if(T.contains(n) == false)
+            {
+                return n;
+            }
+        }
+
+        return -1;
+    }
+
     /**
      * Return the initial labeling for a bipartite graph
      * @param weights the weights for the bipartitie graph
@@ -220,16 +232,14 @@ public class KM
      * @param eqg
      * @return 
      */
-    private static Set getLabelNeighbors(Set S, int[][] eqg)       
+    private static Set getLabelNeighbors(Set<Integer> S, int[][] eqg)
     {
         Set<Integer> N = new HashSet<Integer>();
        
         int sizeY = eqg[0].length;
-        
-        Iterator itr = S.iterator();
-        while (itr.hasNext())
+
+        for (Integer x:S)
         {
-            int x = (Integer) itr.next();
             for (int y=0; y<sizeY; y++)
             {
                 if (eqg[x][y] > 0)
@@ -258,13 +268,11 @@ public class KM
         
         int alpha = Integer.MAX_VALUE;
         // Find the minimum slack
-        Iterator itr = S.iterator();
-        while (itr.hasNext())
+        for (Integer x: S)
         {
-            int x = (Integer) itr.next();
-            for (int y=0; y<sizeY; y++)
+            for (int y=0; y < sizeY;y++)
             {
-                if (!T.contains(y))
+                if(T.contains(y) == false)
                 {
                     int slack = lmap.get("x"+x) + lmap.get("y"+y) - weights[x][y];
                     if (slack < alpha)
@@ -272,25 +280,29 @@ public class KM
                 }
             }
         }
-        // Improve the appropriate labels based on alpha
-        for (int y=0; y<sizeY; y++)
+        // Update the labels for all vertices
+        // If the vertex is in S, then subtract alpha from its current label
+        // If the vertex is in T, then add alpha to its current label
+        // else, leave the label as is
+        for (int x=0; x < sizeX;x++)
         {
-            if (T.contains(y))
+            if(S.contains(x))
             {
-                for (int x=0; x<sizeX; x++)
-                {
-                    if (S.contains(x))
-                    {
-                        int newLabelX = lmap.get("x"+x) - alpha;
-                        int newLabelY = lmap.get("y"+y) + alpha;
-                        lmap.put("x"+x, newLabelX);
-                        lmap.put("y"+y, newLabelY);
-                    }
-                }
+                int currLabel = lmap.get("x"+x);
+                lmap.put("x"+x,currLabel-alpha);
             }
         }
-        
-        return lmap; 
+
+        for (int y=0; y < sizeY;y++)
+        {
+            if(T.contains(y))
+            {
+                int currLabel = lmap.get("y"+y);
+                lmap.put("y"+y,currLabel+alpha);
+            }
+        }
+
+        return lmap;
     }
 
     /**
@@ -316,11 +328,14 @@ public class KM
      * @return 
      */
     private static boolean alreadyMatched(int y, Map<Integer, Integer> matchMap)
-    {      
-        if(matchMap.containsValue(y))
-            return true;
-        else
+    {
+        // Check if y has a value for its match
+        Integer match = matchMap.get(y);
+        if(match == null)
+        {
             return false;
+        }
+        return true;
     }
     
     /**
