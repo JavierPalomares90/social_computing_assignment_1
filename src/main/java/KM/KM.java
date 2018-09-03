@@ -129,7 +129,7 @@ public class KM
         long totalTime=endTime-startTime;
 
         System.out.println("Total time taken for KM is "+totalTime);
-        
+
         int matchingWeight = 0;
         int[] matches = new int[weights.length];
         /* Iterate through Matching set "M" hash map to sum the matching weight, 
@@ -206,7 +206,7 @@ public class KM
                 */
                 if (weights[x][y] == (xlabel + ylabel))
                 {
-                    eqg[x][y] = 0;
+                    eqg[x][y] = 1;
                 }
             } // End for loop through x labels
         } // End for loop through y labels
@@ -344,8 +344,14 @@ public class KM
          */
         return matchMap;
     }
-    
-    
+
+
+    /**
+     * Gets the maximum weight of edges (i,j) for some i
+     * @param weights
+     * @param i
+     * @return
+     */
     private static int getMaxWeight(int[][] weights, int i)
     {
         int result = Integer.MIN_VALUE;
