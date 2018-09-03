@@ -34,6 +34,9 @@ public class KM
 
     private static void KM(int[][] weights)
     {
+        // Get the start time
+        long startTime=System.nanoTime();
+
         int sizeX = weights.length;
         int sizeY = weights[0].length;
         // Set Perfect Match size, assuming a square graph where |X| = |Y|
@@ -122,7 +125,11 @@ public class KM
         /*
            The Hungarian Algorithm has finished when M is Perfect Matching size 
         */
- 
+        long endTime=System.nanoTime();
+        long totalTime=endTime-startTime;
+
+        System.out.println("Total time taken for KM is "+totalTime);
+        
         int matchingWeight = 0;
         int[] matches = new int[weights.length];
         /* Iterate through Matching set "M" hash map to sum the matching weight, 

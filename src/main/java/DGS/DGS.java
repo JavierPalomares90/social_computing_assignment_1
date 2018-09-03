@@ -29,6 +29,9 @@ public class DGS
 
     private static void DGS(int[][] weights)
     {
+        // Get the start time
+        long startTime=System.nanoTime();
+
         int numGoods = weights[0].length;
         int numBidders = weights.length;
         // The prices and owner of each item
@@ -76,6 +79,11 @@ public class DGS
                 prices[item] += delta;
             }
         }
+
+        long endTime=System.nanoTime();
+        long totalTime=endTime-startTime;
+
+        System.out.println("Total time taken for DGS is "+totalTime);
 
         int matchingWeight = 0;
         // print out the owner of item j, and how much they value the item by
