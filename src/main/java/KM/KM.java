@@ -4,11 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Iterator;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -349,15 +345,50 @@ public class KM
     private static Map<Integer,Integer> augmentMatching(
         Map<Integer,Integer> matchMap,
         int[][] eqg,
-        int x, 
+        int u,
         int y)
     {      
         int sizeX = eqg.length;
         int sizeY = eqg[0].length;
+        // u to y is an augmenting path along in the equalityGraph from u to y
+        List<Integer> path = getAugmentingPath(egq, u, y);
         /*
          * TODO: Implementation macthing augmentation
          */
         return matchMap;
+    }
+
+    /**
+     * Find the path from the source to the destination along the graph
+     * @param graph
+     * @param source
+     * @param destination
+     * @return
+     */
+    private static List<Integer> getAugmentingPath(int[][] graph, int source, int destination)
+    {
+        List<Integer> path = new LinkedList<Integer>();
+        Map<String, Boolean> visited = new HashMap<String, Boolean>();
+        visited.put("x"+source,true);
+        int sizeX = graph.length;
+        int sizeY = graph[0].length;
+        int x = source;
+        for(int y = 0; y < sizeY;y++)
+        {
+            // There is an edge from x to y in the graph
+            if(graph[x][y] > 0)
+            {
+                if(visited.get("y"+y) == null)
+                {
+                    // We have not visited vertex y
+
+                }
+                visited.put("y"+y,true);
+            }
+
+        }
+
+        return path;
     }
 
 
