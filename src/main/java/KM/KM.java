@@ -49,7 +49,8 @@ public class KM
         */
         int[][] Eg = getEqualityGraph(labeling, weights);
         /* Initialize matching set "M" to the empty set
-        */
+         * M is a mapping for vertices in X to vertices in Y
+         */
         Map<Integer, Integer> M = new HashMap<Integer, Integer>();
         M.clear();
         /* Initialize Set "S", subset of "X", to the empty set
@@ -100,7 +101,7 @@ public class KM
 
                 if (alreadyMatched(y, M))
                 {
-                    int z = M.get(y);
+                    int z = getMatching(M,y);
                     T.add(y);
                     S.add(z);
                     // TODO: Go back to step 3 after this (skipping lines 74-75)?
@@ -325,20 +326,34 @@ public class KM
      */
     private static boolean alreadyMatched(int y, Map<Integer, Integer> matchMap)
     {
-        // Check if y has a value for its match
-        Integer match = matchMap.get(y);
-        if(match == null)
+        // Check if some x is matched to y
+        return matchMap.containsValue(y);
+    }
+
+    /**
+     * Finds the key for a value in the matching map (gets the x from the y)
+     * @param map
+     * @param valueToLookFor
+     * @return
+     */
+    private static int getMatching(Map<Integer,Integer> map, int valueToLookFor)
+    {
+        for (Integer x: map.keySet())
         {
-            return false;
+            int y = map.get(x);
+            if(y == valueToLookFor)
+            {
+                return x;
+            }
         }
-        return true;
+        return -1;
     }
     
     /**
      * Return the augmented Matching map based on the Equality graph "
      * @param matchMap
      * @param eqg
-     * @param x
+     * @param u
      * @param y
      * @return 
      */
@@ -351,44 +366,237 @@ public class KM
         int sizeX = eqg.length;
         int sizeY = eqg[0].length;
         // u to y is an augmenting path along in the equalityGraph from u to y
-        List<Integer> path = getAugmentingPath(egq, u, y);
-        /*
-         * TODO: Implementation macthing augmentation
-         */
+        List<Integer> path = getAugmentingPath(matchMap,eqg, u, y);
+        // Path is an augmenting path, no flip it to augmentM
+        augmentMatch(matchMap, path);
         return matchMap;
     }
 
+    private static void augmentMatch(Map<Integer,Integer> map, List<Integer> path)
+    {
+        boolean isX = true;
+        boolean match = true;
+        for (int index =0; index < path.size(); index++)
+        {
+            Integer i = path.get(index);
+            if(isX == true)
+            {
+                if(match == true)
+                {
+                    // match x to the next vertex in the path
+                    Integer next = path.get(index+1);
+                    map.put(i,next);
+
+                }else
+                {
+                    // i should now be unmatched
+                    map.put(i, null);
+                }
+
+            }else
+            {
+                int x = getMatching(map,i);
+                // X should not be matched with y anymore
+                map.put(x,null);
+                if(match == true)
+                {
+                    // match y to the next vertex in the path
+                    Integer next = path.get(index+1);
+                    map.put(next,i);
+
+                }else
+                {
+                    // nothing to do
+                }
+
+            }
+
+        }
+
+    }
+
     /**
-     * Find the path from the source to the destination along the graph
+     * Returns the augmenting path in a matching
+     * @param map
      * @param graph
      * @param source
      * @param destination
      * @return
      */
-    private static List<Integer> getAugmentingPath(int[][] graph, int source, int destination)
+    private static List<Integer> getAugmentingPath(Map<Integer,Integer> map, int[][] graph, int source, int destination)
     {
-        List<Integer> path = new LinkedList<Integer>();
+        List<Integer> path = new ArrayList<Integer>();
         Map<String, Boolean> visited = new HashMap<String, Boolean>();
-        visited.put("x"+source,true);
-        int sizeX = graph.length;
-        int sizeY = graph[0].length;
-        int x = source;
-        for(int y = 0; y < sizeY;y++)
-        {
-            // There is an edge from x to y in the graph
-            if(graph[x][y] > 0)
-            {
-                if(visited.get("y"+y) == null)
-                {
-                    // We have not visited vertex y
+        path.add(source);
+        Set<List<Integer>> paths = new HashSet<List<Integer>>();
+        // Populate paths with the possible paths from the source to the destination
+        getPaths(paths, graph,source,true,destination,visited,path);
 
+        List<Integer> augmentingPath = findAugmentingPath(paths,map);
+        return augmentingPath;
+    }
+
+    /**
+     * Get the augmenting path from the possible paths
+     * @param paths
+     * @param map
+     * @return
+     */
+    private static List<Integer> findAugmentingPath(Set<List<Integer>> paths,Map<Integer,Integer> map)
+    {
+        for(List<Integer> path : paths)
+        {
+            if( isAugmenting(path,map))
+            {
+                return path;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * A path is augmenting if it's alternating between unmatching and matching (both ends are unmatched)
+     * @param path
+     * @param map
+     * @return
+     */
+    private static boolean isAugmenting(List<Integer> path, Map<Integer,Integer> map)
+    {
+        // Start of path should be unmatched
+        boolean shouldSeeMatch = false;
+        // Start at a vertex in X
+        boolean isX = true;
+        for(Integer i: path)
+        {
+            if(isX == true)
+            {
+                if(shouldSeeMatch == false)
+                {
+                    if(map.get(i) != null)
+                    {
+                        // There should be no match from X. If there is, this is not an alternating path
+                        return false;
+                    }
+                }else
+                {
+                    // There should be some match from X
+                    if(map.get(i) == null)
+                    {
+                        return false;
+                    }
                 }
-                visited.put("y"+y,true);
+
+            }else
+            {
+                if(shouldSeeMatch == false)
+                {
+                    if(map.containsValue(i))
+                    {
+                        // there should be no match to y
+                        return false;
+                    }
+                }else
+                {
+                    if(map.containsValue(i) == false)
+                    {
+                        // there should be a match to y
+                        return false;
+                    }
+                }
+
             }
 
+            isX = !isX;
+            shouldSeeMatch = !shouldSeeMatch;
+        }
+        // The path should end on y and no match
+        if(isX == true || shouldSeeMatch == true)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Find the path from the source to the destination along the graph recursively
+     * @param graph
+     * @param source
+     * @param isSourceX true if the source is in X (the destination is always in Y)
+     * @param destination
+     * @param visited
+     * @param path
+     * @return
+     */
+    private static void getPaths(Set<List<Integer>> paths, int[][] graph, int source, boolean isSourceX, int destination, Map<String,Boolean> visited,List<Integer> path)
+    {
+        String sourceLabel = "x";
+
+        if(isSourceX == false)
+        {
+            sourceLabel = "y";
+        }
+        visited.put(sourceLabel + source,true);
+        if(isSourceX == false)
+        {
+            if(source == destination)
+            {
+                // We found the destination
+                // Make a copy of the path, then add it to our set
+                List<Integer> copy = new ArrayList<Integer>();
+                copy.addAll(path);
+                paths.add(copy);
+            }
         }
 
-        return path;
+        int sizeX = graph.length;
+        int sizeY = graph[0].length;
+        // We are looking for a path starting at a node in X
+        if(isSourceX == true)
+        {
+            int x = source;
+            for(int y = 0; y < sizeY;y++)
+            {
+                // There is an edge from x to y in the graph
+                if(graph[x][y] > 0)
+                {
+                    Boolean bool = visited.get("y"+y);
+                    if(bool == null || bool.booleanValue() == false)
+                    {
+                        // We have not visited vertex y
+                        // Add y to the path
+                        path.add(y);
+                        getPaths(paths,graph,y,false,destination,visited,path);
+                        // Remove the current node from the path
+                        path.remove(y);
+                    }
+                }
+
+            }
+        }
+        // We are looking for a subpath starting at a node in Y
+        else
+        {
+            int y = source;
+            for (int x =0; x < sizeX; x++)
+            {
+                // There is an edge from y to x in the graph
+                if(graph[x][y] > 0)
+                {
+                    Boolean bool = visited.get("x"+x);
+                    if(bool == null || bool.booleanValue() == false)
+                    {
+                        // We have not visited vertex x
+                        // Add y to the path
+                        path.add(x);
+                        getPaths(paths,graph,y,true,destination,visited,path);
+                        // Remove the current node from the path
+                        path.remove(x);
+                    }
+                }
+            }
+            // Mark the current node as unvisited
+            visited.put(sourceLabel + source,false);
+        }
     }
 
 
