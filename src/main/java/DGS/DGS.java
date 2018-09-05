@@ -27,7 +27,7 @@ public class DGS
         DGS(weights);
     }
 
-    private static void DGS(int[][] weights)
+    public static int[] DGS(int[][] weights)
     {
         // Get the start time
         long startTime=System.nanoTime();
@@ -85,6 +85,15 @@ public class DGS
 
         System.out.println("Total time taken for DGS is "+totalTime);
 
+        int matchingWeight = getMatchingWeight(weights,owners);
+
+        // TODO: Print this before the matches
+        System.out.println(matchingWeight);
+        return owners;
+    }
+
+    public static int getMatchingWeight(int[][] weights, int[] owners)
+    {
         int matchingWeight = 0;
         // print out the owner of item j, and how much they value the item by
         for (int j = 0;j < owners.length; j++)
@@ -93,17 +102,13 @@ public class DGS
             System.out.println("(" + (i+1) + "," + (j+1) + ")");
             matchingWeight += weights[i][j];
         }
-
-        // TODO: Print this before the matches
-        System.out.println(matchingWeight);
-
-
+        return matchingWeight;
     }
 
     private static int getFirstInteger(String line)
     {
         // Reg ex for first number in line. throw everything else away
-        Pattern p = Pattern.compile("([0-9]+) .*");
+        Pattern p = Pattern.compile("([0-9]+).*");
         Matcher m = p.matcher(line);
         if (m.find()) {
             return Integer.parseInt(m.group(1));
@@ -112,7 +117,7 @@ public class DGS
 
     }
 
-    private static int[][] readInputFile(String inputFile)
+    public static int[][] readInputFile(String inputFile)
     {
         try
         {
