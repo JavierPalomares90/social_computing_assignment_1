@@ -473,6 +473,10 @@ public class KM
      */
     private static boolean isAugmenting(List<Integer> path, Map<Integer,Integer> map)
     {
+        /**
+         * TODO: This implemenation is incorrect. We need to check if pairs of vertices in the path are matched,
+         * not just vertices
+         */
         // Start of path should be unmatched
         boolean shouldSeeMatch = false;
         // Start at a vertex in X
