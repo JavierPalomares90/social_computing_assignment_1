@@ -1,6 +1,7 @@
 package DGS;
 
 import org.junit.Test;
+import util.Utils;
 
 import static org.junit.Assert.assertTrue;
 
@@ -10,7 +11,7 @@ public class DGSTest
     public void test0()
     {
         String inputFile = "src/test/resources/input.txt";
-        int[][] weights = DGS.readInputFile(inputFile);
+        int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
 
         int[] owners = DGS.DGS(weights);
@@ -28,7 +29,7 @@ public class DGSTest
     public void test1()
     {
         String inputFile = "src/test/resources/Test_cases/test1.txt";
-        int[][] weights = DGS.readInputFile(inputFile);
+        int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] owners = DGS.DGS(weights);
         assertTrue(owners!= null);
@@ -49,7 +50,7 @@ public class DGSTest
     public void test2()
     {
         String inputFile = "src/test/resources/Test_cases/test2.txt";
-        int[][] weights = DGS.readInputFile(inputFile);
+        int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] owners = DGS.DGS(weights);
         assertTrue(owners!= null);
@@ -73,7 +74,7 @@ public class DGSTest
     public void test3()
     {
         String inputFile = "src/test/resources/Test_cases/test3.txt";
-        int[][] weights = DGS.readInputFile(inputFile);
+        int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] owners = DGS.DGS(weights);
         assertTrue(owners != null);
@@ -91,7 +92,7 @@ public class DGSTest
     public void test4()
     {
         String inputFile = "src/test/resources/Test_cases/test4.txt";
-        int[][] weights = DGS.readInputFile(inputFile);
+        int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] owners = DGS.DGS(weights);
         assertTrue(owners != null);
@@ -108,7 +109,7 @@ public class DGSTest
     public void testM3()
     {
         String inputFile = "src/test/resources/Test_cases/M3.txt";
-        int[][] weights = DGS.readInputFile(inputFile);
+        int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] owners = DGS.DGS(weights);
         assertTrue(owners != null);

@@ -1,5 +1,7 @@
 package KM;
 
+import util.Utils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,7 +22,7 @@ public class KM
             return;
         }
         String inputFile = args[0];
-        int[][] weights = readInputFile(inputFile);
+        int[][] weights = Utils.readInputFile(inputFile);
         if(weights == null)
         {
             System.err.println("Input file is malformed");
@@ -28,7 +30,7 @@ public class KM
         KM(weights);
     }
 
-    private static void KM(int[][] weights)
+    public static int[] KM(int[][] weights)
     {
         // Get the start time
         long startTime=System.nanoTime();
@@ -122,19 +124,9 @@ public class KM
 
         System.out.println("Total time taken for KM is "+totalTime);
 
-        int matchingWeight = 0;
         int[] matches = new int[weights.length];
-        /* Iterate through Matching set "M" hash map to sum the matching weight, 
-           as well a order the matching edges to print out.
-        */
-        for (Map.Entry<Integer, Integer> entry : M.entrySet())
-        {
-            int i = entry.getKey();
-            int j = entry.getValue();
-            matchingWeight += weights[i][j];
-            matches[i] = j;
-        } // End For each loop through Matching set "M"
-        
+        int matchingWeight = getMatchingWeight(M,weights,matches);
+
         // First print out the matching weight
         System.out.println(matchingWeight);       
         for (int i = 0; i < matches.length; i++)
@@ -142,7 +134,26 @@ public class KM
             int j = matches[i];
             System.out.println("(" + (i+1) + "," + (j+1) + ")");
         }
+        return matches;
     } // End KM()
+
+
+    private static int getMatchingWeight(Map<Integer,Integer> M, int[][] weights, int[] matches)
+    {
+        /* Iterate through Matching set "M" hash map to sum the matching weight,
+           as well a order the matching edges to print out.
+        */
+        int matchingWeight = 0;
+        for (Map.Entry<Integer, Integer> entry : M.entrySet())
+        {
+            int i = entry.getKey();
+            int j = entry.getValue();
+            matchingWeight += weights[i][j];
+            matches[i] = j;
+        } // End For each loop through Matching set "M"
+        return matchingWeight;
+
+    }
 
     /**
      * Pick y that is a member of the set of label neighbors of
@@ -617,66 +628,5 @@ public class KM
             }
         }
         return result;
-    }
-
-    private static int getFirstInteger(String line)
-    {
-        // Reg ex for first number in line. throw everything else away
-        Pattern p = Pattern.compile("([0-9]+) .*");
-        Matcher m = p.matcher(line);
-        if (m.find()) {
-            return Integer.parseInt(m.group(1));
-        }
-        return  -1;
-
-    }
-
-    private static int[][] readInputFile(String inputFile)
-    {
-        try
-        {
-            File file = new File(inputFile);
-            FileReader fileReader = new FileReader(file);
-            BufferedReader br = new BufferedReader(fileReader);
-            String line;
-            int i = -1;
-            int[][] weights = null;
-            // number of rows and columns
-            int n;
-            while (true)
-            {
-                line = br.readLine();
-                if(line == null)
-                {
-                    break;
-                }
-                if(i == -1)
-                {
-                    // reading first line
-                    n = getFirstInteger(line);
-                    if(n < 0)
-                    {
-                        return null;
-                    }
-                    // Initialize the matrix
-                    weights = new int[n][n];
-                }else
-                {
-                    // Split line on whitespace
-                    String[] w_i = line.split("\\s+");
-                    for(int j = 0; j < w_i.length; j++)
-                    {
-                        weights[i][j] = Integer.parseInt(w_i[j]);
-                    }
-                }
-                i++;
-            }
-            return weights;
-        }catch (IOException e)
-        {
-            System.err.println("Unable to read input file.");
-            e.printStackTrace();
-        }
-        return null;
     }
 }
