@@ -331,8 +331,10 @@ public class KM
     {
         for (int x=0; x<sizeX; x++)
         {
-            if (map.get(x) == null);
+            if (map.get(x) == null)
+            {
                 return x;
+            }
         }
         return -1;
     }
