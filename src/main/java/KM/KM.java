@@ -67,12 +67,17 @@ public class KM
         /* STEP#2: If matching set "M" is perfect, then stop. Otherwise, pick an
            exposed vertex "u" from set X.
         */
+        boolean addU = true;
         while( M.size() < perfectMatchSize)
-        {            
+        {
             //Find an exposed (non-matched) vertex "u" then add to Set "S"
             int u = exposedXVertex(M, sizeX);
-            S.add(u);
-            
+            if(addU == true)
+            {
+                S.add(u);
+            }
+
+            // TODO: Bug. When u is 0, Nls is {0}
             // Get the neighbors of set S that are in the equality graph
             Set<Integer> NlS = getLabelNeighbors(S, Eg);
             
@@ -106,11 +111,14 @@ public class KM
                     int z = getMatching(M,y);
                     T.add(y);
                     S.add(z);
+                    addU = false;
                     // TODO: Go back to step 3 after this (skipping lines 74-75)?
                 }
                 else
                 {
+                    // TODO: AugmentMatching is not increasing the size of M
                     M = augmentMatching(M, Eg, u, y);
+                    addU = true;
                 }
             }
         } // End while NOT perfect Matching loop
@@ -387,7 +395,7 @@ public class KM
     {
         boolean isX = true;
         boolean match = true;
-        for (int index =0; index < path.size(); index++)
+        for (int index =0; index < path.size()-1; index++)
         {
             Integer i = path.get(index);
             if(isX == true)
@@ -473,62 +481,63 @@ public class KM
      */
     private static boolean isAugmenting(List<Integer> path, Map<Integer,Integer> map)
     {
-        /**
-         * TODO: This implemenation is incorrect. We need to check if pairs of vertices in the path are matched,
-         * not just vertices
-         */
         // Start of path should be unmatched
         boolean shouldSeeMatch = false;
         // Start at a vertex in X
-        boolean isX = true;
-        for(Integer i: path)
+        boolean startNodeInX = true;
+        for(int i = 0; i < path.size() - 1; i++)
         {
-            if(isX == true)
+            int start = path.get(i);
+            int end = path.get(i+1);
+            if(startNodeInX == true)
             {
-                if(shouldSeeMatch == false)
+                if(shouldSeeMatch == true)
                 {
-                    if(map.get(i) != null)
+                    // the start should be matched to the end
+                    if(map.get(start) != end)
                     {
-                        // There should be no match from X. If there is, this is not an alternating path
                         return false;
                     }
+
                 }else
                 {
-                    // There should be some match from X
-                    if(map.get(i) == null)
+                    // The start and the end should not be matched
+                    if(map.get(start) != null && end == map.get(start))
                     {
                         return false;
                     }
                 }
-
             }else
             {
-                if(shouldSeeMatch == false)
+                if(shouldSeeMatch == true)
                 {
-                    if(map.containsValue(i))
+                    // the start should be matched to the end
+                    if(map.get(end) != start)
                     {
-                        // there should be no match to y
                         return false;
                     }
+
                 }else
                 {
-                    if(map.containsValue(i) == false)
+                    // The start and the end should not be matched
+                    if(map.get(end) != null && start == map.get(end))
                     {
-                        // there should be a match to y
                         return false;
                     }
                 }
 
             }
-
-            isX = !isX;
-            shouldSeeMatch = !shouldSeeMatch;
         }
+
+        /** TODO: Check if this code is needed
+            startNodeInX = !startNodeInX;
+            shouldSeeMatch = !shouldSeeMatch;
         // The path should end on y and no match
-        if(isX == true || shouldSeeMatch == true)
+        if(startNodeInX == true || shouldSeeMatch == true)
         {
             return false;
         }
+         **/
         return true;
     }
 
@@ -579,10 +588,11 @@ public class KM
                     {
                         // We have not visited vertex y
                         // Add y to the path
-                        path.add(y);
+                        Integer Y = new Integer(y);
+                        path.add(Y);
                         getPaths(paths,graph,y,false,destination,visited,path);
                         // Remove the current node from the path
-                        path.remove(y);
+                        path.remove(Y);
                     }
                 }
 
@@ -601,11 +611,12 @@ public class KM
                     if(bool == null || bool.booleanValue() == false)
                     {
                         // We have not visited vertex x
-                        // Add y to the path
-                        path.add(x);
+                        // Add x to the path
+                        Integer X = new Integer(x);
+                        path.add(X);
                         getPaths(paths,graph,y,true,destination,visited,path);
                         // Remove the current node from the path
-                        path.remove(x);
+                        path.remove(X);
                     }
                 }
             }
