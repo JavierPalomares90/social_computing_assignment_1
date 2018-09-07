@@ -466,6 +466,13 @@ public class KM
         {
             return null;
         }
+        // If there is only one path, then it must be augmenting
+        else if(paths.size() == 1)
+        {
+            Object[] pathArr = paths.toArray();
+
+            return (List<Integer>)pathArr[0];
+        }
         for(List<Integer> path : paths)
         {
             if( isAugmenting(path,map))
