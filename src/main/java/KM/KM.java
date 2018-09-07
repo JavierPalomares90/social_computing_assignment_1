@@ -108,7 +108,6 @@ public class KM
                     T.add(y);
                     S.add(z);
                     doStep2 = false;
-                    // TODO: Go back to step 3 after this (skipping lines 74-75)?
                 }
                 else
                 {
@@ -630,7 +629,7 @@ public class KM
                         // Add x to the path
                         Integer X = new Integer(x);
                         path.add(X);
-                        getPaths(paths,graph,y,true,destination,visited,path);
+                        getPaths(paths,graph,X,true,destination,visited,path);
                         // Remove the current node from the path
                         path.remove(X);
                     }
