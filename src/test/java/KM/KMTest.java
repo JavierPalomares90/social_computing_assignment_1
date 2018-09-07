@@ -31,11 +31,15 @@ public class KMTest
         int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] matches = KM.KM(weights);
+        assertTrue(matches != null);
+        assertTrue(matches.length == 5);
         int weight = KM.getMatchingWeight(weights,matches);
         assertTrue(weight == 449);
-        /**
-         * TODO: assert individual elements
-         */
+        assertTrue(matches[0] == 1);
+        assertTrue(matches[1] == 3);
+        assertTrue(matches[2] == 2);
+        assertTrue(matches[3] == 0);
+        assertTrue(matches[4] == 4);
 
     }
 
@@ -46,11 +50,22 @@ public class KMTest
         int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] matches = KM.KM(weights);
+        assertTrue(matches != null);
+        assertTrue(matches.length == 10);
+
         int weight = KM.getMatchingWeight(weights,matches);
+
         assertTrue(weight == 577);
-        /**
-         * TODO: assert individual elements
-         */
+        assertTrue(matches[0] == 2);
+        assertTrue(matches[1] == 3);
+        assertTrue(matches[2] == 1);
+        assertTrue(matches[3] == 5);
+        assertTrue(matches[4] == 9);
+        assertTrue(matches[5] == 6);
+        assertTrue(matches[6] == 8);
+        assertTrue(matches[7] == 0);
+        assertTrue(matches[8] == 4);
+        assertTrue(matches[9] == 7);
     }
 
     @Test
@@ -60,6 +75,8 @@ public class KMTest
         int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] matches = KM.KM(weights);
+        assertTrue(matches != null);
+        assertTrue(matches.length == 30);
         int weight = KM.getMatchingWeight(weights,matches);
         assertTrue(weight == 17889);
         /**
@@ -74,6 +91,8 @@ public class KMTest
         int[][] weights = Utils.readInputFile(inputFile);
         assertTrue(weights != null);
         int[] matches = KM.KM(weights);
+        assertTrue(matches != null);
+        assertTrue(matches.length == 50);
         int weight = KM.getMatchingWeight(weights,matches);
         assertTrue(weight == 473);
         /**
