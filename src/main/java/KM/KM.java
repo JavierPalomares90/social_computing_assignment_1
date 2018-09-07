@@ -127,8 +127,8 @@ public class KM
 
         System.out.println("Total time taken for KM is "+totalTime);
 
-        int[] matches = new int[weights.length];
-        int matchingWeight = getMatchingWeight(M,weights,matches);
+        int[] matches = getMatches(M);
+        int matchingWeight = getMatchingWeight(weights,matches);
 
         // First print out the matching weight
         System.out.println(matchingWeight);       
@@ -140,20 +140,33 @@ public class KM
         return matches;
     } // End KM()
 
+    public static int[] getMatches(Map<Integer,Integer> M)
+    {
+        Set<Integer> keys = M.keySet();
+        int[] matches = new int[keys.size()];
+        for (Integer i :M.keySet())
+        {
+            Integer j = M.get(i);
+            matches[i] = j;
 
-    private static int getMatchingWeight(Map<Integer,Integer> M, int[][] weights, int[] matches)
+
+        }
+        return matches;
+    }
+
+
+    public static int getMatchingWeight(int[][] weights, int[] matches)
     {
         /* Iterate through Matching set "M" hash map to sum the matching weight,
            as well a order the matching edges to print out.
         */
         int matchingWeight = 0;
-        for (Map.Entry<Integer, Integer> entry : M.entrySet())
+        for(int i = 0; i < matches.length; i++)
         {
-            int i = entry.getKey();
-            int j = entry.getValue();
+            int j = matches[i];
             matchingWeight += weights[i][j];
-            matches[i] = j;
-        } // End For each loop through Matching set "M"
+        }
+
         return matchingWeight;
 
     }
