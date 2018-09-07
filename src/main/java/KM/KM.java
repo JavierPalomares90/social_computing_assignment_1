@@ -466,13 +466,6 @@ public class KM
         {
             return null;
         }
-        // If there is only one path, then it must be augmenting
-        else if(paths.size() == 1)
-        {
-            Object[] pathArr = paths.toArray();
-
-            return (List<Integer>)pathArr[0];
-        }
         for(List<Integer> path : paths)
         {
             if( isAugmenting(path,map))
@@ -535,19 +528,19 @@ public class KM
                         return false;
                     }
                 }
-
             }
-        }
-
-        /** TODO: Check if this code is needed
             startNodeInX = !startNodeInX;
             shouldSeeMatch = !shouldSeeMatch;
+
+        }
+
+        /* TODO: check this logic
         // The path should end on y and no match
         if(startNodeInX == true || shouldSeeMatch == true)
         {
             return false;
         }
-         **/
+        */
         return true;
     }
 
