@@ -2,13 +2,7 @@ package KM;
 
 import util.Utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class KM
 {
@@ -67,17 +61,19 @@ public class KM
         /* STEP#2: If matching set "M" is perfect, then stop. Otherwise, pick an
            exposed vertex "u" from set X.
         */
-        boolean addU = true;
+        boolean doStep2 = true;
+        int u = -1;
         while( M.size() < perfectMatchSize)
         {
             //Find an exposed (non-matched) vertex "u" then add to Set "S"
-            int u = exposedXVertex(M, sizeX);
-            if(addU == true)
+            if(doStep2 == true)
             {
+                S.clear();
+                T.clear();
+                u = exposedXVertex(M, sizeX);
                 S.add(u);
             }
 
-            // TODO: Bug. When u is 0, Nls is {0}
             // Get the neighbors of set S that are in the equality graph
             Set<Integer> NlS = getLabelNeighbors(S, Eg);
             
@@ -111,14 +107,13 @@ public class KM
                     int z = getMatching(M,y);
                     T.add(y);
                     S.add(z);
-                    addU = false;
+                    doStep2 = false;
                     // TODO: Go back to step 3 after this (skipping lines 74-75)?
                 }
                 else
                 {
-                    // TODO: AugmentMatching is not increasing the size of M
                     M = augmentMatching(M, Eg, u, y);
-                    addU = true;
+                    doStep2 = true;
                 }
             }
         } // End while NOT perfect Matching loop
@@ -273,6 +268,8 @@ public class KM
      * @param T
      * @return 
      */
+    // TODO: There is a bug either in the labeling, or in the get equality.
+    //
     private static Map<String,Integer> updateLabeling(
             Map<String,Integer> lmap,
             int[][] weights,
@@ -465,6 +462,10 @@ public class KM
      */
     private static List<Integer> findAugmentingPath(Set<List<Integer>> paths,Map<Integer,Integer> map)
     {
+        if(paths.size() == 0)
+        {
+            return null;
+        }
         for(List<Integer> path : paths)
         {
             if( isAugmenting(path,map))
