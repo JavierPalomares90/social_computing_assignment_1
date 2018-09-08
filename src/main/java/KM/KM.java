@@ -637,9 +637,9 @@ public class KM
                     }
                 }
             }
-            // Mark the current node as unvisited
-            visited.put(sourceLabel + source,false);
         }
+        // Mark the current node as unvisited
+        visited.put(sourceLabel + source,false);
     }
 
 
