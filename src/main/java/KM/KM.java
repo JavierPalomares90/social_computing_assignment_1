@@ -420,14 +420,15 @@ public class KM
                 }else
                 {
                     // i should now be unmatched
-                    map.put(i, null);
+                    map.remove(i);
                 }
 
             }else
             {
                 int x = getMatching(map,i);
                 // X should not be matched with y anymore
-                map.put(x,null);
+                map.remove(x);
+
                 if(match == true)
                 {
                     // match y to the next vertex in the path
@@ -438,8 +439,9 @@ public class KM
                 {
                     // nothing to do
                 }
-
             }
+            isX = !isX;
+            match = !match;
 
         }
 
