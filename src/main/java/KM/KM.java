@@ -511,7 +511,7 @@ public class KM
                 if(shouldSeeMatch == true)
                 {
                     // the start should be matched to the end
-                    if(map.get(start) != end)
+                    if(map.get(start) == null || map.get(start) != end)
                     {
                         return false;
                     }
@@ -529,7 +529,7 @@ public class KM
                 if(shouldSeeMatch == true)
                 {
                     // the start should be matched to the end
-                    if(map.get(end) != start)
+                    if(map.get(end) == null || map.get(end) != start)
                     {
                         return false;
                     }
@@ -606,10 +606,10 @@ public class KM
                         // We have not visited vertex y
                         // Add y to the path
                         Integer Y = new Integer(y);
-                        path.add(Y);
-                        getPaths(paths,graph,y,false,destination,visited,path);
-                        // Remove the current node from the path
-                        path.remove(Y);
+                        List<Integer> copy = new ArrayList<Integer>();
+                        copy.addAll(path);
+                        copy.add(Y);
+                        getPaths(paths,graph,y,false,destination,visited,copy);
                     }
                 }
 
@@ -630,10 +630,11 @@ public class KM
                         // We have not visited vertex x
                         // Add x to the path
                         Integer X = new Integer(x);
-                        path.add(X);
-                        getPaths(paths,graph,X,true,destination,visited,path);
+                        List<Integer> copy = new ArrayList<Integer>();
+                        copy.addAll(path);
+                        copy.add(X);
+                        getPaths(paths,graph,X,true,destination,visited,copy);
                         // Remove the current node from the path
-                        path.remove(X);
                     }
                 }
             }
