@@ -91,6 +91,12 @@ public class DGS
 
         // TODO: Print this before the matches
         System.out.println(matchingWeight);
+        // print out the owner of item j, and how much they value the item by
+        for (int j = 0;j < owners.length; j++)
+        {
+            int i = owners[j];
+            System.out.println("(" + (i+1) + "," + (j+1) + ")");
+        }
         return owners;
     }
 
@@ -101,7 +107,6 @@ public class DGS
         for (int j = 0;j < owners.length; j++)
         {
             int i = owners[j];
-            System.out.println("(" + (i+1) + "," + (j+1) + ")");
             matchingWeight += weights[i][j];
         }
         return matchingWeight;
