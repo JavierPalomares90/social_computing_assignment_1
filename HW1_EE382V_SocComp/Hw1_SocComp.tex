@@ -1,4 +1,4 @@
-%
+i%
 % This is the LaTeX template file for lecture notes for EE 382C/EE 361C.
 %
 % To familiarize yourself with this template, the body contains
@@ -172,6 +172,8 @@ Proof by induction.
 Base case $(r=1)$. Show that a $1 \times n$ Sudoku can be extended to $2 \times n$ for $n > 1$.
 One way to extend is to copy row 1 of any $1 \times n$ Sudoku and insert it into row 2, but shift every element in the row by 1, so that the element at column $i$ in row 1 is at column $(i + 1) \% n$. 
 
+Induction case. Assume any $k \times n$ Sudoku can be extended to $(k+1) \times n$ for $k < r$. We'll show a $r \times n$ Sudoku can be extended to $(r+1) \times n $ for $r < n$.
+
 \includegraphics{SudokuFigure1}
  
 We have a bipartite graph $G=(A, B, E)$ where $A={1, 2 , 3, \ldots n}$, $B={1, 2, 3, \ldots n}$, and edges $e_{ij} \in E$ that connect $i \in A$ to $j \in B$ where the $i^{th}$ column of the Sudoku does not have the number $j$. If there is a perfect matching on $G$, we can extend the Sudoku by a row, as long as the number of resultant rows is less than or equal to $n$. 
@@ -182,11 +184,7 @@ To do this, take the matching $(i,j)$ of the perfect matching and place $j$ on r
 
 First, note that in a Sudoku with $r$ rows, column $i$ has $r$ distinct numbers in it. Therefore, column $i$ has $(n - r)$ edges to the $(n - r)$ numbers not in column $i$. Then every element $j \in B$ appears exactly once in each row and at most once in any of the $n$ columns, so there are $(n - r)$ column where $i$ can be placed. 
 
-Thus, every element $j \in B$ is adjacent to $(n - r)$ edges, and a perfect matching exists.
+Thus, every element $j \in B$ is adjacent to $(n - r)$ edges.
+Using the answer to problem 1, we can prove G has a perfect matching by letting  $d1=d2= (n-r)$. Thus a perfect matching exists and the Sudoku can be extended.
 
 \end{document}
-
-
-
-
-
