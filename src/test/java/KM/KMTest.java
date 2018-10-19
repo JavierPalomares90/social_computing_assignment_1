@@ -188,4 +188,19 @@ public class KMTest
 
     }
 
+    @Test
+    public void testM2()
+    {
+        String inputFile = "src/test/resources/Test_cases/M2.txt";
+        int[][] weights = Utils.readInputFile(inputFile);
+        assertTrue(weights != null);
+        int[] matches = KM.KM(weights);
+        int weight = KM.getMatchingWeight(weights,matches);
+        assertTrue(weight == 293);
+        /**
+         * TODO: assert individual elements
+         */
+
+    }
+
 }

@@ -179,6 +179,21 @@ public class DGSTest
     }
 
     @Test
+    public void testM2()
+    {
+        String inputFile = "src/test/resources/Test_cases/M2.txt";
+        int[][] weights = Utils.readInputFile(inputFile);
+        assertTrue(weights != null);
+        int[] owners = DGS.DGS(weights);
+        assertTrue(owners != null);
+        assertTrue(owners.length == 30);
+
+        int weight = DGS.getMatchingWeight(weights,owners);
+        // There are multiple perfect matchings, so can only assert for the weight
+        assertTrue(weight == 293);
+    }
+
+    @Test
     public void testM3()
     {
         String inputFile = "src/test/resources/Test_cases/M3.txt";
